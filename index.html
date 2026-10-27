@@ -1,0 +1,1810 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Tech Facilities Manager</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        studio: '#a855f7',
+                        rehearsal: '#f59e0b',
+                        pod: '#06b6d4',
+                        teaching: '#10b981',
+                        store: '#f43f5e'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.4); border-radius: 4px; }
+
+        /* Brown Theme Custom Styles */
+        html.brown body {
+            background-color: #2e1c14 !important;
+            color: #f3e8e2 !important;
+        }
+        html.brown header {
+            background-color: #3d271d !important;
+            border-color: #573a2b !important;
+        }
+        html.brown .bg-white, html.brown .dark\:bg-gray-800 {
+            background-color: #3d271d !important;
+            border-color: #573a2b !important;
+            color: #f3e8e2 !important;
+        }
+        html.brown .bg-gray-50, html.brown .dark\:bg-gray-700\/50, html.brown .dark\:bg-gray-800\/50 {
+            background-color: #4a3125 !important;
+        }
+        html.brown .border-gray-200, html.brown .dark\:border-gray-700, html.brown .border-gray-300, html.brown .dark\:border-gray-600 {
+            border-color: #573a2b !important;
+        }
+        html.brown input, html.brown select, html.brown textarea {
+            background-color: #2e1c14 !important;
+            color: #f3e8e2 !important;
+            border-color: #573a2b !important;
+        }
+        html.brown .text-gray-900, html.brown .dark\:text-white, html.brown .text-gray-800, html.brown .dark\:text-gray-100 {
+            color: #f3e8e2 !important;
+        }
+        html.brown .text-gray-500, html.brown .dark\:text-gray-400, html.brown .text-gray-600, html.brown .dark\:text-gray-300 {
+            color: #d1b8ab !important;
+        }
+        html.brown .hover\:bg-gray-100:hover, html.brown .dark\:hover\:bg-gray-700:hover {
+            background-color: #573a2b !important;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-100 min-h-screen flex flex-col transition-colors duration-200">
+
+    <!-- TOP NAVIGATION BAR -->
+    <header class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-[100rem] mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 gap-4">
+                <!-- Logo & Brand -->
+                <div class="flex items-center space-x-3 shrink-0">
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-600 to-indigo-600 flex items-center justify-center text-white shadow-md">
+                        <i class="fa-solid font-bold fa-sliders text-xl"></i>
+                    </div>
+                    <span class="font-bold text-lg hidden sm:inline-block tracking-tight text-gray-900 dark:text-white">MusicTech<span class="text-purple-500">Ops</span></span>
+                </div>
+
+                <!-- Navigation Tabs -->
+                <nav class="flex space-x-1 sm:space-x-2 overflow-x-auto custom-scrollbar py-2">
+                    <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-tab px-3 py-2 rounded-md text-sm font-medium transition-colors flex items-center gap-2 whitespace-nowrap bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300">
+                        <i class="fa-solid fa-chart-pie"></i> Dashboard
+                    </button>
+                    <button onclick="switchTab('inventory')" id="nav-inventory" class="nav-tab px-3 py-2 rounded-md text-sm font-medium transition-colors flex items-center gap-2 whitespace-nowrap text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                        <i class="fa-solid fa-boxes-stacked"></i> Asset Inventory
+                    </button>
+                    <button onclick="switchTab('stock')" id="nav-stock" class="nav-tab px-3 py-2 rounded-md text-sm font-medium transition-colors flex items-center gap-2 whitespace-nowrap text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                        <i class="fa-solid fa-cubes"></i> Stock (Perishables)
+                    </button>
+                    <button onclick="switchTab('rooms')" id="nav-rooms" class="nav-tab px-3 py-2 rounded-md text-sm font-medium transition-colors flex items-center gap-2 whitespace-nowrap text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                        <i class="fa-solid fa-door-open"></i> Rooms
+                    </button>
+                    <button onclick="switchTab('jobs')" id="nav-jobs" class="nav-tab px-3 py-2 rounded-md text-sm font-medium transition-colors flex items-center gap-2 whitespace-nowrap text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                        <i class="fa-solid fa-screwdriver-wrench"></i> Jobs List
+                    </button>
+                </nav>
+
+                <!-- Top Right Quick Actions -->
+                <div class="flex items-center space-x-2 shrink-0">
+                    <button onclick="pullFromGitHub()" title="Sync All Data Now" class="px-3 py-1.5 text-xs font-medium rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white flex items-center gap-1.5 shadow-sm">
+                        <i class="fa-solid fa-rotate"></i> <span class="hidden md:inline">Sync Now</span>
+                    </button>
+                    <button onclick="cycleTheme()" id="theme-toggle-btn" title="Cycle Theme (Dark / Light / Brown)" class="p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg text-base leading-none">
+                        <span id="theme-icon">💩</span>
+                    </button>
+                    <button onclick="openModal('modal-csv')" title="Import / Export Data" class="px-3 py-1.5 text-xs font-medium rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 flex items-center gap-1.5">
+                        <i class="fa-solid fa-file-csv text-purple-500"></i> <span class="hidden md:inline">Import/Export CSV</span>
+                    </button>
+                    <button onclick="openModal('modal-github')" id="sync-btn" title="Cloud Sync Settings" class="px-3 py-1.5 text-xs font-medium rounded-lg bg-purple-600 hover:bg-purple-700 text-white flex items-center gap-1.5 shadow-sm">
+                        <i class="fa-solid fa-cloud"></i> <span class="hidden md:inline">Cloud Sync</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="max-w-[100rem] w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow">
+
+        <!-- ================= DASHBOARD TAB ================= -->
+        <section id="tab-dashboard" class="space-y-6">
+            <!-- Quick Navigation Tiles -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div onclick="switchTab('jobs')" class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 hover:border-purple-500 dark:hover:border-purple-500 transition-all cursor-pointer group">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Open Jobs</span>
+                        <div class="p-2 rounded-lg bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                        </div>
+                    </div>
+                    <div class="mt-2 flex items-baseline">
+                        <span id="dash-open-jobs" class="text-3xl font-extrabold text-gray-900 dark:text-white">0</span>
+                    </div>
+                </div>
+
+                <div onclick="navigateToInventoryFilter('Missing')" class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 hover:border-purple-500 dark:hover:border-purple-500 transition-all cursor-pointer group">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Missing Assets</span>
+                        <div class="p-2 rounded-lg bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-magnifying-glass font-bold"></i>
+                        </div>
+                    </div>
+                    <div class="mt-2 flex items-baseline">
+                        <span id="dash-missing-assets" class="text-3xl font-extrabold text-gray-900 dark:text-white">0</span>
+                    </div>
+                </div>
+
+                <div onclick="switchTab('inventory')" class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 hover:border-purple-500 dark:hover:border-purple-500 transition-all cursor-pointer group">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Total Assets</span>
+                        <div class="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-microchip"></i>
+                        </div>
+                    </div>
+                    <div class="mt-2 flex items-baseline">
+                        <span id="dash-total-assets" class="text-3xl font-extrabold text-gray-900 dark:text-white">0</span>
+                    </div>
+                </div>
+
+                <div onclick="switchTab('rooms')" class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 hover:border-purple-500 dark:hover:border-purple-500 transition-all cursor-pointer group">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Total Rooms</span>
+                        <div class="p-2 rounded-lg bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-door-closed"></i>
+                        </div>
+                    </div>
+                    <div class="mt-2 flex items-baseline">
+                        <span id="dash-total-rooms" class="text-3xl font-extrabold text-gray-900 dark:text-white">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Widgets Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Widget: Current Booked Out Assets -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 flex flex-col h-96">
+                    <div class="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center bg-gray-50/50 dark:bg-gray-800/50 rounded-t-xl">
+                        <h3 class="font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                            <i class="fa-solid fa-handshake text-purple-500"></i> Current Booked Out Assets
+                        </h3>
+                        <span id="dash-booked-count" class="text-xs px-2 py-0.5 rounded-full bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300 font-semibold">0 Booked</span>
+                    </div>
+                    <div class="p-4 flex-grow overflow-y-auto custom-scrollbar">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm">
+                                <thead class="text-xs uppercase bg-gray-50 dark:bg-gray-700/50 text-gray-500 dark:text-gray-400 border-b dark:border-gray-700">
+                                    <tr>
+                                        <th class="py-2 px-3">Asset</th>
+                                        <th class="py-2 px-3">Borrower</th>
+                                        <th class="py-2 px-3 text-right">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="widget-booked-list" class="divide-y divide-gray-100 dark:divide-gray-700/50">
+                                    <!-- Populated via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Widget: Rooms with Current Issues -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 flex flex-col h-96">
+                    <div class="p-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center bg-gray-50/50 dark:bg-gray-800/50 rounded-t-xl">
+                        <h3 class="font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                            <i class="fa-solid fa-circle-exclamation text-rose-500"></i> Rooms with Current Issues
+                        </h3>
+                        <span id="dash-rooms-issue-count" class="text-xs px-2 py-0.5 rounded-full bg-rose-100 dark:bg-rose-900/50 text-rose-700 dark:text-rose-300 font-semibold">0 Affected</span>
+                    </div>
+                    <div class="p-4 flex-grow overflow-y-auto custom-scrollbar">
+                        <div id="widget-room-issues" class="space-y-3">
+                            <!-- Populated via JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= ASSET INVENTORY TAB ================= -->
+        <section id="tab-inventory" class="hidden space-y-4">
+            <div class="flex flex-col md:flex-row justify-between items-stretch md:items-center gap-3">
+                <div class="flex flex-wrap items-center gap-2 flex-grow">
+                    <div class="relative min-w-[200px] flex-grow md:flex-grow-0">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-gray-400"></i>
+                        <input type="text" id="asset-search" oninput="renderAssets()" placeholder="Search assets, ID, model, serial..." class="w-full pl-9 pr-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    </div>
+                    <select id="asset-category-filter" onchange="renderAssets()" class="py-2 px-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
+                        <option value="ALL">All Categories</option>
+                        <option value="Microphone">Microphone</option>
+                        <option value="Amplifier">Amplifier</option>
+                        <option value="Cabinet">Cabinet</option>
+                        <option value="Audio Interface">Audio Interface</option>
+                        <option value="Mixer">Mixer</option>
+                        <option value="Outboard">Outboard</option>
+                        <option value="Pedal">Pedal</option>
+                        <option value="Guitar">Guitar</option>
+                        <option value="Bass">Bass</option>
+                        <option value="Keys/Piano">Keys/Piano</option>
+                        <option value="Synth">Synth</option>
+                        <option value="Drums">Drums</option>
+                        <option value="Cymbals">Cymbals</option>
+                        <option value="Drum Hardware">Drum Hardware</option>
+                        <option value="PA">PA</option>
+                        <option value="Speakers">Speakers</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    <select id="asset-condition-filter" onchange="renderAssets()" class="py-2 px-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
+                        <option value="ALL">All Conditions</option>
+                        <option value="Working">Working</option>
+                        <option value="Broken">Broken</option>
+                        <option value="Missing">Missing</option>
+                        <option value="Needs Attention">Needs Attention</option>
+                        <option value="Retired">Retired</option>
+                    </select>
+                    <select id="asset-location-filter" onchange="renderAssets()" class="py-2 px-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
+                        <!-- Populated via JS -->
+                    </select>
+                </div>
+                <div class="flex items-center gap-2 shrink-0">
+                    <button onclick="openModal('modal-asset')" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium text-sm flex items-center justify-center gap-2 shadow-sm">
+                        <i class="fa-solid fa-plus"></i> Add Asset
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+                <div class="w-full">
+                    <table class="w-full text-left text-xs table-fixed">
+                        <thead class="bg-gray-50 dark:bg-gray-700/50 text-gray-500 dark:text-gray-400 text-[11px] uppercase border-b dark:border-gray-700 select-none">
+                            <tr>
+                                <th onclick="sortAssets('code')" class="py-3 px-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 w-[10%]">Asset ID <i class="fa-solid fa-sort text-[10px]"></i></th>
+                                <th onclick="sortAssets('serial')" class="py-3 px-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 w-[11%]">Serial No. <i class="fa-solid fa-sort text-[10px]"></i></th>
+                                <th onclick="sortAssets('manufacturer')" class="py-3 px-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 w-[11%]">Make <i class="fa-solid fa-sort text-[10px]"></i></th>
+                                <th onclick="sortAssets('model')" class="py-3 px-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 w-[13%]">Model <i class="fa-solid fa-sort text-[10px]"></i></th>
+                                <th onclick="sortAssets('category')" class="py-3 px-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 w-[11%]">Category <i class="fa-solid fa-sort text-[10px]"></i></th>
+                                <th onclick="sortAssets('subcategory')" class="py-3 px-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 w-[9%]">Subcat <i class="fa-solid fa-sort text-[10px]"></i></th>
+                                <th onclick="sortAssets('condition')" class="py-3 px-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 w-[11%]">Condition <i class="fa-solid fa-sort text-[10px]"></i></th>
+                                <th onclick="sortAssets('location')" class="py-3 px-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 w-[11%]">Location <i class="fa-solid fa-sort text-[10px]"></i></th>
+                                <th onclick="sortAssets('bookedTo')" class="py-3 px-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 w-[8%]">Booked To <i class="fa-solid fa-sort text-[10px]"></i></th>
+                                <th class="py-3 px-2 text-right w-[5%]">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="assets-table-body" class="divide-y divide-gray-100 dark:divide-gray-700/50">
+                            <!-- Populated via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= STOCK (PERISHABLES) TAB ================= -->
+        <section id="tab-stock" class="hidden space-y-4">
+            <div class="flex justify-between items-center">
+                <h2 class="text-lg font-bold text-gray-900 dark:text-white">Perishable Assets Stock</h2>
+                <button onclick="openModal('modal-stock')" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium text-sm flex items-center gap-2 shadow-sm">
+                    <i class="fa-solid fa-plus"></i> Add Perishable Item
+                </button>
+            </div>
+
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+                <table class="w-full text-left text-sm">
+                    <thead class="bg-gray-50 dark:bg-gray-700/50 text-gray-500 dark:text-gray-400 text-xs uppercase border-b dark:border-gray-700">
+                        <tr>
+                            <th class="py-3 px-4">Perishable Asset</th>
+                            <th class="py-3 px-4">Quantity</th>
+                            <th class="py-3 px-4 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="stock-table-body" class="divide-y divide-gray-100 dark:divide-gray-700/50">
+                        <!-- Populated via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ================= ROOMS TAB ================= -->
+        <section id="tab-rooms" class="hidden space-y-4">
+            <div class="flex flex-col md:flex-row justify-between items-stretch md:items-center gap-3">
+                <div class="flex flex-wrap items-center gap-2 flex-grow">
+                    <select id="room-building-filter" onchange="renderRooms()" class="py-2 px-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
+                        <!-- Populated via JS -->
+                    </select>
+                    <select id="room-type-filter" onchange="renderRooms()" class="py-2 px-3 rounded-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
+                        <option value="ALL">All Room Types</option>
+                        <option value="Studio">Studio</option>
+                        <option value="Rehearsal Room">Rehearsal Room</option>
+                        <option value="Production Pod">Production Pod</option>
+                        <option value="Teaching Space">Teaching Space</option>
+                        <option value="Store">Store</option>
+                    </select>
+                </div>
+                <button onclick="openModal('modal-room')" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium text-sm flex items-center gap-2 shadow-sm shrink-0">
+                    <i class="fa-solid fa-plus"></i> Add Room
+                </button>
+            </div>
+
+            <div id="rooms-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Populated via JS -->
+            </div>
+        </section>
+
+        <!-- ================= JOBS LIST TAB ================= -->
+        <section id="tab-jobs" class="hidden space-y-6">
+            <div class="flex justify-between items-center">
+                <h2 class="text-lg font-bold text-gray-900 dark:text-white">Maintenance & Fault Tickets</h2>
+                <button onclick="openModal('modal-job')" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium text-sm flex items-center gap-2 shadow-sm">
+                    <i class="fa-solid fa-plus"></i> Log New Ticket
+                </button>
+            </div>
+
+            <!-- Side-by-side columns: Open vs In Progress -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Open Tickets -->
+                <div class="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-xl border border-gray-200 dark:border-gray-700/60 min-h-[300px]">
+                    <div class="flex items-center justify-between mb-4 border-b dark:border-gray-700 pb-2">
+                        <h3 class="font-bold text-amber-600 dark:text-amber-400 flex items-center gap-2">
+                            <i class="fa-solid fa-circle-dot"></i> Open Tickets
+                        </h3>
+                        <span id="count-open-tickets" class="px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300">0</span>
+                    </div>
+                    <div id="container-open-tickets" class="space-y-3">
+                        <!-- Populated via JS -->
+                    </div>
+                </div>
+
+                <!-- In Progress -->
+                <div class="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-xl border border-gray-200 dark:border-gray-700/60 min-h-[300px]">
+                    <div class="flex items-center justify-between mb-4 border-b dark:border-gray-700 pb-2">
+                        <h3 class="font-bold text-blue-600 dark:text-blue-400 flex items-center gap-2">
+                            <i class="fa-solid fa-spinner fa-spin-pulse"></i> In Progress
+                        </h3>
+                        <span id="count-progress-tickets" class="px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300">0</span>
+                    </div>
+                    <div id="container-progress-tickets" class="space-y-3">
+                        <!-- Populated via JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Section: Resolved Tickets -->
+            <div class="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-xl border border-gray-200 dark:border-gray-700/60">
+                <div class="flex items-center justify-between mb-4 border-b dark:border-gray-700 pb-2">
+                    <h3 class="font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-2">
+                        <i class="fa-solid fa-circle-check"></i> Resolved Tickets
+                    </h3>
+                    <span id="count-resolved-tickets" class="px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-300">0</span>
+                </div>
+                <div id="container-resolved-tickets" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    <!-- Populated via JS -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ================= MODALS ================= -->
+
+    <!-- PERISHABLE STOCK MODAL (Add/Edit) -->
+    <div id="modal-stock" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 w-full max-w-md p-6 space-y-4">
+            <h3 id="modal-stock-title" class="text-lg font-bold text-gray-900 dark:text-white">Add Perishable Asset</h3>
+            <form id="form-stock" onsubmit="saveStock(event)" class="space-y-3">
+                <input type="hidden" id="stock-id">
+                <div>
+                    <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Perishable Asset</label>
+                    <input type="text" id="stock-name" required placeholder="e.g. Remo Ambassador 14 Snare Skin, Guitar Strings 10-46" class="w-full px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Quantity</label>
+                    <input type="number" min="0" id="stock-qty" required placeholder="0" class="w-full px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
+                </div>
+                <div class="flex justify-end gap-2 pt-3">
+                    <button type="button" onclick="closeModal('modal-stock')" class="px-4 py-2 text-xs font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">Cancel</button>
+                    <button type="submit" class="px-4 py-2 text-xs font-medium bg-purple-600 text-white hover:bg-purple-700 rounded-lg shadow-sm">Save Stock Item</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ASSIGN PERISHABLE TO ASSET MODAL -->
+    <div id="modal-assign-stock" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 w-full max-w-md p-6 space-y-4">
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white">Assign Perishable to Asset</h3>
+            <form id="form-assign-stock" onsubmit="executeAssignStock(event)" class="space-y-3">
+                <input type="hidden" id="assign-stock-id">
+                <div>
+                    <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Perishable Asset</label>
+                    <input type="text" id="assign-stock-name" readonly class="w-full px-3 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 border border-gray-300 dark:border-gray-600 text-sm focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Target Asset</label>
+                    <select id="assign-target-asset" required class="w-full px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
+                        <!-- Populated dynamically -->
+                    </select>
+                </div>
+                <p class="text-xs text-gray-500 dark:text-gray-400">Assigning 1 unit will automatically deduct from stock quantity and log the history on the selected asset.</p>
+                <div class="flex justify-end gap-2 pt-3">
+                    <button type="button" onclick="closeModal('modal-assign-stock')" class="px-4 py-2 text-xs font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">Cancel</button>
+                    <button type="submit" class="px-4 py-2 text-xs font-medium bg-purple-600 text-white hover:bg-purple-700 rounded-lg shadow-sm">Confirm Assignment</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- VIEW ASSET HISTORY / PERISHABLES HISTORY MODAL -->
+    <div id="modal-perishables-history" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 w-full max-w-md p-6 space-y-4">
+            <div class="flex justify-between items-center border-b dark:border-gray-700 pb-3">
+                <h3 id="history-modal-title" class="text-base font-bold text-gray-900 dark:text-white">Asset History Log</h3>
+                <button onclick="closeModal('modal-perishables-history')" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="history-modal-content" class="max-h-60 overflow-y-auto custom-scrollbar space-y-2">
+                <!-- Populated via JS -->
+            </div>
+            <div class="flex justify-end pt-2">
+                <button onclick="closeModal('modal-perishables-history')" class="px-4 py-2 text-xs font-medium bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 rounded-lg">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ROOM MODAL (Add/Edit) -->
+    <div id="modal-room" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 w-full max-w-md p-6 space-y-4">
+            <h3 id="modal-room-title" class="text-lg font-bold text-gray-900 dark:text-white">Add Room</h3>
+            <form id="form-room" onsubmit="saveRoom(event)" class="space-y-3">
+                <input type="hidden" id="room-id">
+                <div>
+                    <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Room Name</label>
+                    <input type="text" id="room-name" required class="w-full px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Building</label>
+                        <input type="text" id="room-building" required class="w-full px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Room Number</label>
+                        <input type="text" id="room-number" required class="w-full px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Room Type</label>
+                    <select id="room-type" required class="w-full px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
+                        <option value="Studio">Studio</option>
+                        <option value="Rehearsal Room">Rehearsal Room</option>
+                        <option value="Production Pod">Production Pod</option>
+                        <option value="Teaching Space">Teaching Space</option>
+                        <option value="Store">Store</option>
+                    </select>
+                </div>
+                <div class="flex justify-end gap-2 pt-3">
+                    <button type="button" onclick="closeModal('modal-room')" class="px-4 py-2 text-xs font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">Cancel</button>
+                    <button type="submit" class="px-4 py-2 text-xs font-medium bg-purple-600 text-white hover:bg-purple-700 rounded-lg shadow-sm">Save Room</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ASSET MODAL (Add/Edit) -->
+    <div id="modal-asset" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 w-full max-w-lg p-6 space-y-4">
+            <h3 id="modal-asset-title" class="text-lg font-bold text-gray-900 dark:text-white">Add Asset</h3>
+            <form id="form-asset" onsubmit="saveAsset(event)" class="space-y-3">
+                <input type="hidden" id="asset-id-internal">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Asset ID / Code</label>
+                        <input type="text" id="asset-code" required placeholder="e.g. MIC-001" class="w-full px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Serial Number</label>
+                        <input type="text" id="asset-serial" placeholder="e.g. SN-987654" class="w-full px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Manufacturer</label>
+                        <input type="text" id="asset-manufacturer" required placeholder="e.g. Neumann" class="w-full px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Model</label>
+                        <input type="text" id="asset-model" required placeholder="e.g. U87 Ai" class="w-full px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Category</label>
+                        <select id="asset-category" onchange="handleCategoryChange()" required class="w-full px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            <option value="Microphone">Microphone</option>
+                            <option value="Amplifier">Amplifier</option>
+                            <option value="Cabinet">Cabinet</option>
+                            <option value="Audio Interface">Audio Interface</option>
+                            <option value="Mixer">Mixer</option>
+                            <option value="Outboard">Outboard</option>
+                            <option value="Pedal">Pedal</option>
+                            <option value="Guitar">Guitar</option>
+                            <option value="Bass">Bass</option>
+                            <option value="Keys/Piano">Keys/Piano</option>
+                            <option value="Synth">Synth</option>
+                            <option value="Drums">Drums</option>
+                            <option value="Cymbals">Cymbals</option>
+                            <option value="Drum Hardware">Drum Hardware</option>
+                            <option value="PA">PA</option>
+                            <option value="Speakers">Speakers</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Subcategory</label>
+                        <select id="asset-subcategory" class="w-full px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            <!-- Populated via JS -->
+                        </select>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Condition</label>
+                        <select id="asset-condition" required class="w-full px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            <option value="Working">Working</option>
+                            <option value="Broken">Broken</option>
+                            <option value="Missing">Missing</option>
+                            <option value="Needs Attention">Needs Attention</option>
+                            <option value="Retired">Retired</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Location</label>
+                        <select id="asset-location" required class="w-full px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            <!-- Populated with Store + Rooms -->
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Booked Out To</label>
+                    <input type="text" id="asset-booked-to" placeholder="e.g. John Smith" class="w-full px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
+                </div>
+                <div class="flex justify-end gap-2 pt-3">
+                    <button type="button" onclick="closeModal('modal-asset')" class="px-4 py-2 text-xs font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">Cancel</button>
+                    <button type="submit" class="px-4 py-2 text-xs font-medium bg-purple-600 text-white hover:bg-purple-700 rounded-lg shadow-sm">Save Asset</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- JOB TICKET MODAL -->
+    <div id="modal-job" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 w-full max-w-md p-6 space-y-4">
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white">Log Fault Ticket</h3>
+            <form id="form-job" onsubmit="saveJob(event)" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Ticket Title</label>
+                    <input type="text" id="job-title" required placeholder="e.g. Channel 3 Fader Crackle" class="w-full px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Target Room</label>
+                        <select id="job-room-ref" class="w-full px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Specific Asset (Optional)</label>
+                        <select id="job-asset-ref" class="w-full px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Severity</label>
+                    <select id="job-severity" required class="w-full px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
+                        <option value="Low">Low</option>
+                        <option value="Medium">Medium</option>
+                        <option value="High">High</option>
+                        <option value="Critical">Critical</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Description</label>
+                    <textarea id="job-desc" rows="3" required placeholder="Describe the fault in detail..." class="w-full px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"></textarea>
+                </div>
+                <div class="flex justify-end gap-2 pt-3">
+                    <button type="button" onclick="closeModal('modal-job')" class="px-4 py-2 text-xs font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">Cancel</button>
+                    <button type="submit" class="px-4 py-2 text-xs font-medium bg-purple-600 text-white hover:bg-purple-700 rounded-lg shadow-sm">Submit Ticket</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- IMPORT / EXPORT CSV & DATA MODAL -->
+    <div id="modal-csv" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 w-full max-w-2xl p-6 space-y-6">
+            <div class="flex justify-between items-center border-b dark:border-gray-700 pb-3">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                    <i class="fa-solid fa-file-csv text-purple-500"></i> Import / Export Data Tools
+                </h3>
+                <button onclick="closeModal('modal-csv')" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Import Column -->
+                <div class="space-y-4">
+                    <h4 class="text-sm font-semibold text-gray-900 dark:text-white border-b dark:border-gray-700 pb-1">Import Data</h4>
+                    
+                    <!-- Rooms Import -->
+                    <div class="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg space-y-2 border border-gray-200 dark:border-gray-600">
+                        <span class="text-xs font-medium block">Import Rooms CSV</span>
+                        <input type="file" id="csv-rooms-file" accept=".csv" class="block w-full text-xs text-gray-500 dark:text-gray-400 file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-purple-50 file:text-purple-700 dark:file:bg-purple-900/40 dark:file:text-purple-300">
+                        <div class="flex justify-between items-center pt-1">
+                            <button onclick="downloadRoomsSampleCSV()" class="text-xs text-purple-600 dark:text-purple-400 hover:underline">Download Sample CSV</button>
+                            <button onclick="importRoomsCSV()" class="px-2 py-1 text-xs bg-purple-600 text-white rounded hover:bg-purple-700">Import</button>
+                        </div>
+                    </div>
+
+                    <!-- Assets Import -->
+                    <div class="p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg space-y-2 border border-gray-200 dark:border-gray-600">
+                        <span class="text-xs font-medium block">Import Assets CSV</span>
+                        <input type="file" id="csv-assets-file" accept=".csv" class="block w-full text-xs text-gray-500 dark:text-gray-400 file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-purple-50 file:text-purple-700 dark:file:bg-purple-900/40 dark:file:text-purple-300">
+                        <div class="flex justify-between items-center pt-1">
+                            <button onclick="downloadAssetsSampleCSV()" class="text-xs text-purple-600 dark:text-purple-400 hover:underline">Download Sample CSV</button>
+                            <button onclick="importAssetsCSV()" class="px-2 py-1 text-xs bg-purple-600 text-white rounded hover:bg-purple-700">Import</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Export Column -->
+                <div class="space-y-4">
+                    <h4 class="text-sm font-semibold text-gray-900 dark:text-white border-b dark:border-gray-700 pb-1">Export Data</h4>
+                    <div class="flex flex-col gap-2">
+                        <button onclick="exportRoomsCSV()" class="w-full px-3 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-xs font-medium rounded-lg flex items-center justify-between">
+                            <span>Export Rooms (CSV)</span>
+                            <i class="fa-solid fa-download"></i>
+                        </button>
+                        <button onclick="exportAssetsCSV()" class="w-full px-3 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-xs font-medium rounded-lg flex items-center justify-between">
+                            <span>Export Assets (CSV)</span>
+                            <i class="fa-solid fa-download"></i>
+                        </button>
+                        <button onclick="exportJSONBackup()" class="w-full px-3 py-2 bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-900/50 text-xs font-medium rounded-lg flex items-center justify-between border border-purple-200 dark:border-purple-800">
+                            <span>Export Complete JSON Backup</span>
+                            <i class="fa-solid fa-file-code"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CLOUD SYNC MODAL -->
+    <div id="modal-github" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 w-full max-w-md p-6 space-y-4">
+            <div class="flex justify-between items-center border-b dark:border-gray-700 pb-3">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                    <i class="fa-solid fa-cloud text-purple-500"></i> Cloud Sync Settings
+                </h3>
+                <button onclick="closeModal('modal-github')" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <p class="text-xs text-gray-500 dark:text-gray-400">Syncs securely through JSONBin.io using standard HTTPS requests, bypassing corporate firewalls.</p>
+
+            <div class="space-y-3">
+                <div>
+                    <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">JSONBin Bin ID</label>
+                    <input type="text" id="gh-user" placeholder="e.g. 64a81bc3..." class="w-full px-3 py-2 text-xs rounded-lg bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                </div>
+                <div class="hidden">
+                    <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Repository Name</label>
+                    <input type="text" id="gh-repo" value="jsonbin" class="w-full px-3 py-2 text-xs rounded-lg bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">JSONBin Master Key</label>
+                    <input type="password" id="gh-token" placeholder="$2a$10$..." class="w-full px-3 py-2 text-xs rounded-lg bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center pt-3 border-t dark:border-gray-700">
+                <button onclick="disableGitHubSync()" class="text-xs text-rose-500 hover:underline font-medium">Clear / Disable Sync</button>
+                <button onclick="saveGitHubSettings()" class="px-4 py-2 text-xs font-medium bg-purple-600 text-white hover:bg-purple-700 rounded-lg shadow-sm">Save & Connect</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONFIRMATION MODAL -->
+    <div id="modal-confirm" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 w-full max-w-sm p-6 space-y-4 text-center">
+            <div class="w-12 h-12 bg-rose-100 dark:bg-rose-900/40 text-rose-600 dark:text-rose-400 rounded-full flex items-center justify-center mx-auto text-xl">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h3 id="confirm-title" class="text-base font-bold text-gray-900 dark:text-white">Are you sure?</h3>
+            <p id="confirm-message" class="text-xs text-gray-500 dark:text-gray-400">This action cannot be undone.</p>
+            <div class="flex justify-center gap-2 pt-2">
+                <button onclick="closeModal('modal-confirm')" class="px-4 py-2 text-xs font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">Cancel</button>
+                <button id="confirm-action-btn" class="px-4 py-2 text-xs font-medium bg-rose-600 text-white hover:bg-rose-700 rounded-lg shadow-sm">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NOTIFICATION TOAST -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-gray-900 text-white dark:bg-white dark:text-gray-900 px-4 py-3 rounded-xl shadow-lg flex items-center gap-3 border border-gray-700 dark:border-gray-200 text-xs font-medium pointer-events-none">
+        <i id="toast-icon" class="fa-solid fa-circle-check text-emerald-400 dark:text-emerald-600 text-base"></i>
+        <span id="toast-msg">Notification message</span>
+    </div>
+
+    <!-- APPLICATION LOGIC & DATA ENGINE -->
+    <script>
+        // State Collections
+        let rooms = [];
+        let assets = [];
+        let jobs = [];
+        let stock = [];
+
+        // Sorting State
+        let assetSortCol = 'code';
+        let assetSortAsc = true;
+
+        // Track currently editing row ID in inventory table
+        let editingAssetId = null;
+
+        // Default Initial Seed Data if empty
+        const initialRooms = [
+            { id: 'rm-1', name: 'Studio A', building: 'Music Wing', number: '101', type: 'Studio' },
+            { id: 'rm-2', name: 'Live Room B', building: 'Music Wing', number: '102', type: 'Rehearsal Room' },
+            { id: 'rm-3', name: 'Pod 1', building: 'Media Center', number: '201', type: 'Production Pod' },
+            { id: 'rm-4', name: 'Main Lecture Hall', building: 'Central Block', number: 'G05', type: 'Teaching Space' },
+            { id: 'rm-5', name: 'Central Gear Store', building: 'Central Block', number: 'G01', type: 'Store' }
+        ];
+
+        const initialAssets = [
+            { id: 'ast-1', code: 'MIC-001', serial: 'SN-88231', manufacturer: 'Neumann', model: 'U87 Ai', category: 'Microphone', subcategory: 'Condenser', condition: 'Working', location: 'Studio A', bookedTo: 'Sarah Connor', perishablesHistory: [] },
+            { id: 'ast-2', code: 'MIC-002', serial: 'SN-88232', manufacturer: 'AKG', model: 'C414', category: 'Microphone', subcategory: 'Condenser', condition: 'Needs Attention', location: 'Live Room B', bookedTo: '', perishablesHistory: [] },
+            { id: 'ast-3', code: 'SYN-001', serial: 'SN-40012', manufacturer: 'Moog', model: 'Subsequent 37', category: 'Synth', subcategory: 'Analog', condition: 'Working', location: 'Pod 1', bookedTo: '', perishablesHistory: [] },
+            { id: 'ast-4', code: 'DRM-001', serial: 'SN-10293', manufacturer: 'Pearl', model: 'Export Kick 22"', category: 'Drums', subcategory: 'Kick', condition: 'Working', location: 'Live Room B', bookedTo: '', perishablesHistory: [{ name: 'Remo Powerstroke 3 22" Head', assignedAt: '2026-10-01 10:00' }] },
+            { id: 'ast-5', code: 'DRM-002', serial: 'SN-10294', manufacturer: 'Pearl', model: 'Export Snare 14"', category: 'Drums', subcategory: 'Snare', condition: 'Working', location: 'Live Room B', bookedTo: '', perishablesHistory: [{ name: 'Remo Ambassador 14" Snare Skin', assignedAt: '2026-10-15 11:30' }] },
+            { id: 'ast-6', code: 'CAB-102', serial: 'N/A', manufacturer: 'Mogami', model: 'XLR Cable 10m', category: 'Other', subcategory: 'XLR', condition: 'Missing', location: 'Store', bookedTo: '', perishablesHistory: [] },
+            { id: 'ast-7', code: 'MIX-001', serial: 'SN-77110', manufacturer: 'SSL', model: 'Matrix 2', category: 'Mixer', subcategory: 'Analog Console', condition: 'Broken', location: 'Studio A', bookedTo: '', perishablesHistory: [] }
+        ];
+
+        const initialJobs = [
+            { id: 'job-1', title: 'Channel 4 noisy preamp', roomRef: 'Studio A', assetRef: 'MIX-001', severity: 'High', description: 'Channel 4 preamp produces static buzz when gain is raised above +15dB.', status: 'Open', createdAt: '2026-10-20 09:30', updatedAt: '2026-10-20 09:30' },
+            { id: 'job-2', title: 'Capsule check required', roomRef: 'Live Room B', assetRef: 'MIC-002', severity: 'Medium', description: 'Slight diaphragm rattling audible under high SPL.', status: 'In Progress', createdAt: '2026-10-21 14:15', updatedAt: '2026-10-22 10:00' }
+        ];
+
+        const initialStock = [
+            { id: 'stk-1', name: 'Remo Ambassador 14" Snare Skin', quantity: 8 },
+            { id: 'stk-2', name: 'Remo Powerstroke 3 22" Head', quantity: 3 },
+            { id: 'stk-3', name: 'D\'Addario EXL110 Guitar Strings (10-46)', quantity: 15 },
+            { id: 'stk-4', name: 'Ernie Ball Bass Strings (45-105)', quantity: 5 }
+        ];
+
+        // NAVIGATION & MODALS LOGIC
+        function switchTab(tabId) {
+            ['dashboard', 'inventory', 'stock', 'rooms', 'jobs'].forEach(t => {
+                const section = document.getElementById(`tab-${t}`);
+                const navBtn = document.getElementById(`nav-${t}`);
+                if (t === tabId) {
+                    section.classList.remove('hidden');
+                    navBtn.className = "nav-tab px-3 py-2 rounded-md text-sm font-medium transition-colors flex items-center gap-2 whitespace-nowrap bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300";
+                } else {
+                    section.classList.add('hidden');
+                    navBtn.className = "nav-tab px-3 py-2 rounded-md text-sm font-medium transition-colors flex items-center gap-2 whitespace-nowrap text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700";
+                }
+            });
+        }
+
+        function setAppTheme(theme) {
+            const html = document.documentElement;
+            const icon = document.getElementById('theme-icon');
+            
+            html.classList.remove('dark', 'brown');
+            
+            if (theme === 'brown') {
+                html.classList.add('brown');
+                if (icon) icon.innerHTML = '💩';
+            } else if (theme === 'light') {
+                if (icon) icon.innerHTML = '<i class="fa-solid fa-moon text-gray-600"></i>';
+            } else {
+                html.classList.add('dark');
+                if (icon) icon.innerHTML = '<i class="fa-solid fa-sun text-amber-400"></i>';
+            }
+            
+            localStorage.setItem('theme', theme);
+        }
+
+        function cycleTheme() {
+            const currentTheme = localStorage.getItem('theme') || 'dark';
+            if (currentTheme === 'dark') {
+                setAppTheme('light');
+            } else if (currentTheme === 'light') {
+                setAppTheme('brown');
+            } else {
+                setAppTheme('dark');
+            }
+        }
+
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            setAppTheme(savedTheme);
+        }
+
+        function openModal(id) {
+            document.getElementById(id).classList.remove('hidden');
+            if (id === 'modal-asset') {
+                populateAssetLocationDropdown();
+                handleCategoryChange();
+            }
+            if (id === 'modal-job') populateJobDropdowns();
+            if (id === 'modal-github') {
+                document.getElementById('gh-user').value = localStorage.getItem('gh_user') || '';
+                document.getElementById('gh-repo').value = localStorage.getItem('gh_repo') || '';
+                document.getElementById('gh-token').value = localStorage.getItem('gh_token') || '';
+            }
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const msg = document.getElementById('toast-msg');
+            msg.textContent = message;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        function navigateToInventoryFilter(cond) {
+            switchTab('inventory');
+            document.getElementById('asset-condition-filter').value = cond;
+            renderAssets();
+        }
+
+        // STORAGE & CLOUD SYNC MANAGEMENT
+        function loadLocalData() {
+            rooms = JSON.parse(localStorage.getItem('mt_rooms')) || initialRooms;
+            assets = JSON.parse(localStorage.getItem('mt_assets')) || initialAssets;
+            stock = JSON.parse(localStorage.getItem('mt_stock')) || initialStock;
+            
+            assets.forEach(a => {
+                if (a.category === 'Amplifer') {
+                    a.category = 'Amplifier';
+                }
+                if (!a.perishablesHistory) {
+                    a.perishablesHistory = [];
+                }
+            });
+
+            jobs = JSON.parse(localStorage.getItem('mt_jobs')) || initialJobs;
+        }
+
+        function saveLocalData() {
+            localStorage.setItem('mt_rooms', JSON.stringify(rooms));
+            localStorage.setItem('mt_assets', JSON.stringify(assets));
+            localStorage.setItem('mt_jobs', JSON.stringify(jobs));
+            localStorage.setItem('mt_stock', JSON.stringify(stock));
+            
+            // Automatically push to cloud if credentials exist
+            pushToGitHub();
+        }
+
+        // JSONBIN CLOUD SYNC ENGINE (Kept function names for zero app breakage)
+        async function pullFromGitHub() {
+            const binId = localStorage.getItem('gh_user');
+            const apiKey = localStorage.getItem('gh_token');
+
+            if (!binId || !apiKey) {
+                openModal('modal-github');
+                showToast("Please configure your JSONBin credentials first.");
+                return;
+            }
+
+            try {
+                const res = await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`, {
+                    headers: { 'X-Master-Key': apiKey }
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    const record = data.record;
+
+                    if (record) {
+                        if (record.rooms) rooms = record.rooms;
+                        if (record.assets) assets = record.assets;
+                        if (record.jobs) jobs = record.jobs;
+                        if (record.stock) stock = record.stock;
+
+                        saveLocalDataSilently();
+                        renderAll();
+                        showToast("Successfully pulled latest data from cloud!");
+                    }
+                } else {
+                    showToast("Failed to pull from cloud. Check credentials.");
+                }
+            } catch (err) {
+                console.error("Cloud pull error:", err);
+                showToast("Connection error during cloud pull.");
+            }
+        }
+
+        let syncTimeout = null;
+        async function pushToGitHub() {
+            const binId = localStorage.getItem('gh_user');
+            const apiKey = localStorage.getItem('gh_token');
+
+            if (!binId || !apiKey) return;
+
+            clearTimeout(syncTimeout);
+            syncTimeout = setTimeout(async () => {
+                try {
+                    const masterPayload = { rooms, assets, jobs, stock, updatedAt: new Date().toISOString() };
+                    await fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Master-Key': apiKey
+                        },
+                        body: JSON.stringify(masterPayload)
+                    });
+                } catch (err) {
+                    console.error("Background sync failed:", err);
+                }
+            }, 300);
+        }
+
+        async function pullFromGitHubSilently() {
+            const binId = localStorage.getItem('gh_user');
+            const apiKey = localStorage.getItem('gh_token');
+            if (!binId || !apiKey) return;
+
+            try {
+                const res = await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`, {
+                    headers: { 'X-Master-Key': apiKey }
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    const record = data.record;
+
+                    if (record) {
+                        if (record.rooms) rooms = record.rooms;
+                        if (record.assets) assets = record.assets;
+                        if (record.jobs) jobs = record.jobs;
+                        if (record.stock) stock = record.stock;
+
+                        saveLocalDataSilently();
+                        renderAll();
+                    }
+                }
+            } catch (err) {
+                console.error("Silent startup pull failed:", err);
+            }
+        }
+
+        function saveLocalDataSilently() {
+            localStorage.setItem('mt_rooms', JSON.stringify(rooms));
+            localStorage.setItem('mt_assets', JSON.stringify(assets));
+            localStorage.setItem('mt_jobs', JSON.stringify(jobs));
+            localStorage.setItem('mt_stock', JSON.stringify(stock));
+        }
+
+        function saveGitHubSettings() {
+            const user = document.getElementById('gh-user').value.trim();
+            const repo = document.getElementById('gh-repo').value.trim();
+            const token = document.getElementById('gh-token').value.trim();
+
+            if (!user || !token) {
+                alert("Please fill out your JSONBin Bin ID and Master Key.");
+                return;
+            }
+
+            localStorage.setItem('gh_user', user);
+            localStorage.setItem('gh_repo', repo);
+            localStorage.setItem('gh_token', token);
+
+            closeModal('modal-github');
+            showToast("Cloud sync settings saved!");
+            pullFromGitHub();
+        }
+
+        function disableGitHubSync() {
+            localStorage.removeItem('gh_user');
+            localStorage.removeItem('gh_repo');
+            localStorage.removeItem('gh_token');
+            closeModal('modal-github');
+            showToast("Cloud sync disabled.");
+        }
+
+        // BADGE & STYLING HELPERS
+        function getConditionBadge(cond) {
+            switch(cond) {
+                case 'Working': return 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800';
+                case 'Needs Attention': return 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 border-amber-300 dark:border-amber-800';
+                case 'Broken': return 'bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-300 border-rose-300 dark:border-rose-800';
+                case 'Missing': return 'bg-orange-100 dark:bg-orange-900/40 text-orange-700 dark:text-orange-300 border-orange-300 dark:border-orange-800';
+                default: return 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600';
+            }
+        }
+
+        function getRoomTypeBadge(type) {
+            switch(type) {
+                case 'Studio': return 'bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-800';
+                case 'Rehearsal Room': return 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800';
+                case 'Production Pod': return 'bg-cyan-100 dark:bg-cyan-900/40 text-cyan-700 dark:text-cyan-300 border-cyan-200 dark:border-cyan-800';
+                case 'Teaching Space': return 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800';
+                default: return 'bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-300 border-rose-200 dark:border-rose-800';
+            }
+        }
+
+        function getSeverityBadge(sev) {
+            switch(sev) {
+                case 'Critical': return 'bg-rose-600 text-white';
+                case 'High': return 'bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-300';
+                case 'Medium': return 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300';
+                default: return 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300';
+            }
+        }
+
+        // Lifecycle Init
+        window.addEventListener('DOMContentLoaded', () => {
+            loadLocalData();
+            initTheme();
+            renderAll();
+            if (localStorage.getItem('gh_token')) {
+                pullFromGitHubSilently();
+            }
+        });
+
+        // Dynamic Form Dropdowns
+        function handleCategoryChange() {
+            const cat = document.getElementById('asset-category').value;
+            const subSelect = document.getElementById('asset-subcategory');
+            subSelect.innerHTML = '';
+
+            let options = [];
+            if (cat === 'Drums') {
+                options = ['Kick', 'Floor Tom', 'Rack Tom', 'Snare'];
+            } else {
+                options = ['Standard', 'Other'];
+            }
+
+            options.forEach(opt => {
+                const el = document.createElement('option');
+                el.value = opt;
+                el.textContent = opt;
+                subSelect.appendChild(el);
+            });
+        }
+
+        function populateAssetLocationDropdown() {
+            const locSelect = document.getElementById('asset-location');
+            locSelect.innerHTML = `<option value="Store">Store</option>` + 
+                rooms.map(r => `<option value="${r.name}">${r.name} (${r.building})</option>`).join('');
+
+            const filterLoc = document.getElementById('asset-location-filter');
+            const currentVal = filterLoc.value || 'ALL';
+            filterLoc.innerHTML = `<option value="ALL">All Locations</option><option value="Store">Store</option>` +
+                rooms.map(r => `<option value="${r.name}">${r.name}</option>`).join('');
+            filterLoc.value = currentVal;
+        }
+
+        function populateRoomFilters() {
+            const bldgFilter = document.getElementById('room-building-filter');
+            const currentBldg = bldgFilter.value || 'ALL';
+            const buildings = Array.from(new Set(rooms.map(r => r.building)));
+            bldgFilter.innerHTML = `<option value="ALL">All Buildings</option>` + 
+                buildings.map(b => `<option value="${b}">${b}</option>`).join('');
+            bldgFilter.value = currentBldg;
+        }
+
+        function populateJobDropdowns() {
+            const rmSelect = document.getElementById('job-room-ref');
+            rmSelect.innerHTML = rooms.map(r => `<option value="${r.name}">${r.name}</option>`).join('');
+            
+            const astSelect = document.getElementById('job-asset-ref');
+            astSelect.innerHTML = `<option value="">None / General Room Issue</option>` + 
+                assets.map(a => `<option value="${a.code}">${a.code} - ${a.manufacturer} ${a.model}</option>`).join('');
+        }
+
+        // RENDER LOGIC
+        function renderAll() {
+            populateAssetLocationDropdown();
+            populateRoomFilters();
+            renderDashboard();
+            renderAssets();
+            renderStock();
+            renderRooms();
+            renderJobs();
+        }
+
+        function renderDashboard() {
+            document.getElementById('dash-open-jobs').textContent = jobs.filter(j => j.status !== 'Resolved').length;
+            document.getElementById('dash-missing-assets').textContent = assets.filter(a => a.condition === 'Missing').length;
+            document.getElementById('dash-total-assets').textContent = assets.length;
+            document.getElementById('dash-total-rooms').textContent = rooms.length;
+
+            // Booked Out Assets
+            const bookedList = document.getElementById('widget-booked-list');
+            const bookedAssets = assets.filter(a => a.bookedTo && a.bookedTo.trim() !== '');
+            document.getElementById('dash-booked-count').textContent = `${bookedAssets.length} Booked`;
+            
+            if (bookedAssets.length === 0) {
+                bookedList.innerHTML = `<tr><td colspan="3" class="py-4 text-center text-xs text-gray-400">No assets currently booked out.</td></tr>`;
+            } else {
+                bookedList.innerHTML = bookedAssets.map(a => `
+                    <tr>
+                        <td class="py-2.5 px-3">
+                            <div class="font-bold text-xs text-purple-600 dark:text-purple-400">${a.code}</div>
+                            <div class="text-[11px] text-gray-500">${a.manufacturer} ${a.model}</div>
+                        </td>
+                        <td class="py-2.5 px-3 font-medium text-xs text-gray-800 dark:text-gray-200">${a.bookedTo}</td>
+                        <td class="py-2.5 px-3 text-right">
+                            <button onclick="checkInAsset('${a.id}')" class="px-2 py-1 bg-purple-100 dark:bg-purple-900/50 hover:bg-purple-200 text-purple-700 dark:text-purple-300 rounded text-[11px] font-medium">Check In</button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+
+            // Rooms with Current Issues
+            const roomIssuesContainer = document.getElementById('widget-room-issues');
+            const activeJobs = jobs.filter(j => j.status !== 'Resolved');
+            const affectedRooms = Array.from(new Set(activeJobs.map(j => j.roomRef)));
+            document.getElementById('dash-rooms-issue-count').textContent = `${affectedRooms.length} Affected`;
+
+            if (affectedRooms.length === 0) {
+                roomIssuesContainer.innerHTML = `<div class="text-center py-8 text-xs text-gray-400">All rooms are operating normally.</div>`;
+            } else {
+                roomIssuesContainer.innerHTML = affectedRooms.map(rmName => {
+                    const roomJobs = activeJobs.filter(j => j.roomRef === rmName);
+                    return `
+                        <div class="p-3 bg-rose-50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-900/40 rounded-lg flex justify-between items-center">
+                            <div>
+                                <h4 class="font-bold text-xs text-rose-800 dark:text-rose-300">${rmName}</h4>
+                                <p class="text-[11px] text-rose-600 dark:text-rose-400 font-medium">${roomJobs.length} active issue(s)</p>
+                            </div>
+                            <button onclick="switchTab('jobs')" class="px-2 py-1 text-xs bg-rose-600 text-white rounded hover:bg-rose-700">View Jobs</button>
+                        </div>
+                    `;
+                }).join('');
+            }
+        }
+
+        // STOCK MANAGEMENT LOGIC
+        function renderStock() {
+            const tbody = document.getElementById('stock-table-body');
+            if (stock.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="3" class="py-8 text-center text-xs text-gray-400">No perishable stock items found.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = stock.map(st => `
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors">
+                    <td class="py-3 px-4 font-semibold text-gray-900 dark:text-white">${st.name}</td>
+                    <td class="py-3 px-4">
+                        <span class="px-2.5 py-1 rounded-full text-xs font-bold ${st.quantity > 0 ? 'bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300' : 'bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-300'}">
+                            ${st.quantity} in stock
+                        </span>
+                    </td>
+                    <td class="py-3 px-4 text-right space-x-1 whitespace-nowrap">
+                        <button onclick="openAssignStockModal('${st.id}')" ${st.quantity === 0 ? 'disabled' : ''} title="Assign to Asset" class="px-2.5 py-1 text-xs bg-purple-600 text-white rounded hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed">
+                            <i class="fa-solid fa-link mr-1"></i>Assign to Asset
+                        </button>
+                        <button onclick="editStock('${st.id}')" title="Edit" class="p-1 text-gray-500 hover:text-purple-600 dark:hover:text-purple-400 rounded"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button onclick="confirmDelete('stock', '${st.id}')" title="Delete" class="p-1 text-gray-500 hover:text-rose-600 dark:hover:text-rose-400 rounded"><i class="fa-solid fa-trash-can"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function saveStock(e) {
+            e.preventDefault();
+            const id = document.getElementById('stock-id').value;
+            const name = document.getElementById('stock-name').value.trim();
+            const quantity = parseInt(document.getElementById('stock-qty').value, 10) || 0;
+
+            if (id) {
+                const idx = stock.findIndex(s => s.id === id);
+                if (idx !== -1) stock[idx] = { id, name, quantity };
+            } else {
+                stock.push({ id: 'stk-' + Date.now(), name, quantity });
+            }
+
+            saveLocalData();
+            renderAll();
+            closeModal('modal-stock');
+            document.getElementById('form-stock').reset();
+            document.getElementById('stock-id').value = '';
+            showToast("Stock updated successfully!");
+        }
+
+        function editStock(id) {
+            const st = stock.find(s => s.id === id);
+            if (!st) return;
+            openModal('modal-stock');
+            document.getElementById('modal-stock-title').textContent = "Edit Perishable Asset";
+            document.getElementById('stock-id').value = st.id;
+            document.getElementById('stock-name').value = st.name;
+            document.getElementById('stock-qty').value = st.quantity;
+        }
+
+        function openAssignStockModal(stockId) {
+            const st = stock.find(s => s.id === stockId);
+            if (!st) return;
+
+            document.getElementById('assign-stock-id').value = st.id;
+            document.getElementById('assign-stock-name').value = st.name;
+
+            const targetSelect = document.getElementById('assign-target-asset');
+            targetSelect.innerHTML = assets.map(a => `<option value="${a.id}">${a.code} - ${a.manufacturer} ${a.model} (${a.location})</option>`).join('');
+
+            openModal('modal-assign-stock');
+        }
+
+        function executeAssignStock(e) {
+            e.preventDefault();
+            const stockId = document.getElementById('assign-stock-id').value;
+            const assetId = document.getElementById('assign-target-asset').value;
+
+            const stkItem = stock.find(s => s.id === stockId);
+            const targetAsset = assets.find(a => a.id === assetId);
+
+            if (!stkItem || stkItem.quantity <= 0) {
+                showToast("Cannot assign: stock quantity is 0.");
+                return;
+            }
+
+            if (targetAsset) {
+                stkItem.quantity -= 1;
+                if (!targetAsset.perishablesHistory) targetAsset.perishablesHistory = [];
+                targetAsset.perishablesHistory.unshift({
+                    name: stkItem.name,
+                    assignedAt: new Date().toISOString().replace('T', ' ').substring(0, 16)
+                });
+
+                saveLocalData();
+                renderAll();
+                closeModal('modal-assign-stock');
+                showToast(`Assigned ${stkItem.name} to ${targetAsset.code}. Stock updated!`);
+            }
+        }
+
+        function viewPerishablesHistory(assetId) {
+            const ast = assets.find(a => a.id === assetId);
+            if (!ast) return;
+
+            document.getElementById('history-modal-title').textContent = `Asset History Log: ${ast.code} (${ast.manufacturer} ${ast.model})`;
+            const historyContainer = document.getElementById('history-modal-content');
+
+            const history = ast.perishablesHistory || [];
+
+            if (history.length === 0) {
+                historyContainer.innerHTML = `<p class="text-xs text-gray-400 py-4 text-center">No history or perishables assigned to this asset yet.</p>`;
+            } else {
+                historyContainer.innerHTML = history.map(item => `
+                    <div class="p-2.5 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-600 flex justify-between items-center text-xs">
+                        <span class="font-medium text-gray-800 dark:text-gray-200">${item.name}</span>
+                        <span class="text-gray-400 font-mono text-[11px]">${item.assignedAt}</span>
+                    </div>
+                `).join('');
+            }
+
+            openModal('modal-perishables-history');
+        }
+
+        // ASSETS CRUD & ACTIONS
+        function checkInAsset(id) {
+            const ast = assets.find(a => a.id === id);
+            if (ast) {
+                ast.bookedTo = '';
+                saveLocalData();
+                renderAll();
+                showToast(`Asset ${ast.code} checked back in.`);
+            }
+        }
+
+        function sortAssets(col) {
+            if (assetSortCol === col) {
+                assetSortAsc = !assetSortAsc;
+            } else {
+                assetSortCol = col;
+                assetSortAsc = true;
+            }
+            renderAssets();
+        }
+
+        function getCategoryOptionsHtml(selectedCat) {
+            const categories = ["Microphone", "Amplifier", "Cabinet", "Audio Interface", "Mixer", "Outboard", "Pedal", "Guitar", "Bass", "Keys/Piano", "Synth", "Drums", "Cymbals", "Drum Hardware", "PA", "Speakers", "Other"];
+            return categories.map(c => `<option value="${c}" ${c === selectedCat ? 'selected' : ''}>${c}</option>`).join('');
+        }
+
+        function getConditionOptionsHtml(selectedCond) {
+            const conditions = ["Working", "Broken", "Missing", "Needs Attention", "Retired"];
+            return conditions.map(c => `<option value="${c}" ${c === selectedCond ? 'selected' : ''}>${c}</option>`).join('');
+        }
+
+        function getLocationOptionsHtml(selectedLoc) {
+            const locs = ["Store", ...rooms.map(r => r.name)];
+            return locs.map(l => `<option value="${l}" ${l === selectedLoc ? 'selected' : ''}>${l}</option>`).join('');
+        }
+
+        function startInlineEditAsset(id) {
+            editingAssetId = id;
+            renderAssets();
+        }
+
+        function cancelInlineEditAsset() {
+            editingAssetId = null;
+            renderAssets();
+        }
+
+        function saveInlineEditAsset(id) {
+            const row = document.getElementById(`inline-edit-row-${id}`);
+            if (!row) return;
+
+            const code = row.querySelector('.inline-code').value.trim();
+            const serial = row.querySelector('.inline-serial').value.trim();
+            const manufacturer = row.querySelector('.inline-manufacturer').value.trim();
+            const model = row.querySelector('.inline-model').value.trim();
+            const category = row.querySelector('.inline-category').value;
+            const subcategory = row.querySelector('.inline-subcategory').value.trim();
+            const condition = row.querySelector('.inline-condition').value;
+            const location = row.querySelector('.inline-location').value;
+            const bookedTo = row.querySelector('.inline-bookedTo').value.trim();
+
+            if (!code || !manufacturer || !model) {
+                showToast("Asset ID, Make, and Model are required.");
+                return;
+            }
+
+            const idx = assets.findIndex(a => a.id === id);
+            if (idx !== -1) {
+                const existingHistory = assets[idx].perishablesHistory || [];
+                assets[idx] = { id, code, serial, manufacturer, model, category, subcategory, condition, location, bookedTo, perishablesHistory: existingHistory };
+                saveLocalData();
+                editingAssetId = null;
+                renderAll();
+                showToast("Asset updated inline!");
+            }
+        }
+
+        function renderAssets() {
+            const searchTerm = document.getElementById('asset-search').value.toLowerCase();
+            const catFilter = document.getElementById('asset-category-filter').value;
+            const condFilter = document.getElementById('asset-condition-filter').value;
+            const locFilter = document.getElementById('asset-location-filter').value;
+
+            let filtered = assets.filter(ast => {
+                const matchesSearch = (ast.code || '').toLowerCase().includes(searchTerm) ||
+                                      (ast.manufacturer || '').toLowerCase().includes(searchTerm) ||
+                                      (ast.model || '').toLowerCase().includes(searchTerm) ||
+                                      (ast.serial || '').toLowerCase().includes(searchTerm) ||
+                                      (ast.location || '').toLowerCase().includes(searchTerm);
+                const matchesCat = catFilter === 'ALL' || ast.category === catFilter;
+                const matchesCond = condFilter === 'ALL' || ast.condition === condFilter;
+                const matchesLoc = locFilter === 'ALL' || ast.location === locFilter;
+                return matchesSearch && matchesCat && matchesCond && matchesLoc;
+            });
+
+            filtered.sort((a, b) => {
+                let valA = (a[assetSortCol] || '').toString();
+                let valB = (b[assetSortCol] || '').toString();
+                const comp = valA.localeCompare(valB, undefined, { numeric: true, sensitivity: 'base' });
+                return assetSortAsc ? comp : -comp;
+            });
+
+            const tbody = document.getElementById('assets-table-body');
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="10" class="py-8 text-center text-xs text-gray-400">No assets found matching parameters.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(ast => {
+                const isEditing = editingAssetId === ast.id;
+
+                if (isEditing) {
+                    return `
+                        <tr id="inline-edit-row-${ast.id}" class="bg-purple-50/50 dark:bg-purple-900/20 text-xs border-b border-purple-200 dark:border-purple-800">
+                            <td class="py-2 px-1">
+                                <input type="text" class="inline-code w-full px-1.5 py-1 text-xs rounded bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-1 focus:ring-purple-500 font-mono" value="${ast.code || ''}">
+                            </td>
+                            <td class="py-2 px-1">
+                                <input type="text" class="inline-serial w-full px-1.5 py-1 text-xs rounded bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-1 focus:ring-purple-500 font-mono" value="${ast.serial || ''}">
+                            </td>
+                            <td class="py-2 px-1">
+                                <input type="text" class="inline-manufacturer w-full px-1.5 py-1 text-xs rounded bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-1 focus:ring-purple-500" value="${ast.manufacturer || ''}">
+                            </td>
+                            <td class="py-2 px-1">
+                                <input type="text" class="inline-model w-full px-1.5 py-1 text-xs rounded bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-1 focus:ring-purple-500" value="${ast.model || ''}">
+                            </td>
+                            <td class="py-2 px-1">
+                                <select class="inline-category w-full px-1 py-1 text-xs rounded bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-1 focus:ring-purple-500">
+                                    ${getCategoryOptionsHtml(ast.category || 'Other')}
+                                </select>
+                            </td>
+                            <td class="py-2 px-1">
+                                <input type="text" class="inline-subcategory w-full px-1.5 py-1 text-xs rounded bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-1 focus:ring-purple-500" value="${ast.subcategory || ''}">
+                            </td>
+                            <td class="py-2 px-1">
+                                <select class="inline-condition w-full px-1 py-1 text-xs rounded bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-1 focus:ring-purple-500">
+                                    ${getConditionOptionsHtml(ast.condition || 'Working')}
+                                </select>
+                            </td>
+                            <td class="py-2 px-1">
+                                <select class="inline-location w-full px-1 py-1 text-xs rounded bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-1 focus:ring-purple-500">
+                                    ${getLocationOptionsHtml(ast.location || 'Store')}
+                                </select>
+                            </td>
+                            <td class="py-2 px-1">
+                                <input type="text" class="inline-bookedTo w-full px-1.5 py-1 text-xs rounded bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-1 focus:ring-purple-500" value="${ast.bookedTo || ''}" placeholder="Borrower">
+                            </td>
+                            <td class="py-2 px-1 text-right whitespace-nowrap">
+                                <button onclick="saveInlineEditAsset('${ast.id}')" title="Save" class="p-1 text-emerald-600 hover:text-emerald-500 dark:text-emerald-400 font-bold mr-1"><i class="fa-solid fa-check"></i></button>
+                                <button onclick="cancelInlineEditAsset()" title="Cancel" class="p-1 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"><i class="fa-solid fa-xmark"></i></button>
+                            </td>
+                        </tr>
+                    `;
+                }
+
+                return `
+                    <tr onclick="viewPerishablesHistory('${ast.id}')" class="hover:bg-purple-50/50 dark:hover:bg-purple-900/20 cursor-pointer transition-colors text-xs">
+                        <td class="py-2.5 px-2 font-mono font-bold text-purple-600 dark:text-purple-400 truncate" title="${ast.code}">${ast.code}</td>
+                        <td class="py-2.5 px-2 font-mono text-gray-500 dark:text-gray-400 truncate" title="${ast.serial || '—'}">${ast.serial || '—'}</td>
+                        <td class="py-2.5 px-2 font-medium text-gray-900 dark:text-white truncate" title="${ast.manufacturer}">${ast.manufacturer}</td>
+                        <td class="py-2.5 px-2 font-medium text-gray-900 dark:text-white truncate" title="${ast.model}">${ast.model}</td>
+                        <td class="py-2.5 px-2 text-gray-600 dark:text-gray-300 truncate" title="${ast.category || 'Other'}">${ast.category || 'Other'}</td>
+                        <td class="py-2.5 px-2 text-gray-500 dark:text-gray-400 font-mono truncate" title="${ast.subcategory || '—'}">${ast.subcategory || '—'}</td>
+                        <td class="py-2.5 px-2">
+                            <span class="px-1.5 py-0.5 text-[10px] rounded border font-medium inline-block whitespace-nowrap truncate max-w-full ${getConditionBadge(ast.condition)}">${ast.condition}</span>
+                        </td>
+                        <td class="py-2.5 px-2 font-medium text-gray-700 dark:text-gray-300 truncate" title="${ast.location}">
+                            <i class="fa-solid fa-location-dot text-purple-500 mr-1"></i>${ast.location}
+                        </td>
+                        <td class="py-2.5 px-2 truncate">
+                            ${ast.bookedTo ? `<span class="bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 px-1.5 py-0.5 rounded font-medium text-[10px] inline-block truncate max-w-full" title="${ast.bookedTo}">${ast.bookedTo}</span>` : '<span class="text-gray-400">—</span>'}
+                        </td>
+                        <td class="py-2.5 px-2 text-right whitespace-nowrap" onclick="event.stopPropagation()">
+                            <button onclick="startInlineEditAsset('${ast.id}')" title="Quick Inline Edit" class="p-1 text-gray-500 hover:text-purple-600 dark:hover:text-purple-400 rounded"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button onclick="confirmDelete('asset', '${ast.id}')" title="Delete" class="p-1 text-gray-500 hover:text-rose-600 dark:hover:text-rose-400 rounded"><i class="fa-solid fa-trash-can"></i></button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function saveAsset(e) {
+            e.preventDefault();
+            const internalId = document.getElementById('asset-id-internal').value;
+            const code = document.getElementById('asset-code').value.trim();
+            const serial = document.getElementById('asset-serial').value.trim();
+            const manufacturer = document.getElementById('asset-manufacturer').value.trim();
+            const model = document.getElementById('asset-model').value.trim();
+            const category = document.getElementById('asset-category').value;
+            const subcategory = document.getElementById('asset-subcategory').value;
+            const condition = document.getElementById('asset-condition').value;
+            const location = document.getElementById('asset-location').value;
+            const bookedTo = document.getElementById('asset-booked-to').value.trim();
+
+            if (internalId) {
+                const idx = assets.findIndex(a => a.id === internalId);
+                if (idx !== -1) {
+                    const history = assets[idx].perishablesHistory || [];
+                    assets[idx] = { id: internalId, code, serial, manufacturer, model, category, subcategory, condition, location, bookedTo, perishablesHistory: history };
+                }
+            } else {
+                const newAsset = { id: 'ast-' + Date.now(), code, serial, manufacturer, model, category, subcategory, condition, location, bookedTo, perishablesHistory: [] };
+                assets.push(newAsset);
+            }
+
+            saveLocalData();
+            renderAll();
+            closeModal('modal-asset');
+            document.getElementById('form-asset').reset();
+            document.getElementById('asset-id-internal').value = '';
+            showToast("Asset saved successfully!");
+        }
+
+        function editAsset(id) {
+            const ast = assets.find(a => a.id === id);
+            if (!ast) return;
+            openModal('modal-asset');
+            document.getElementById('modal-asset-title').textContent = "Edit Asset";
+            document.getElementById('asset-id-internal').value = ast.id;
+            document.getElementById('asset-code').value = ast.code;
+            document.getElementById('asset-serial').value = ast.serial;
+            document.getElementById('asset-manufacturer').value = ast.manufacturer;
+            document.getElementById('asset-model').value = ast.model;
+            document.getElementById('asset-category').value = ast.category || 'Other';
+            handleCategoryChange();
+            document.getElementById('asset-subcategory').value = ast.subcategory || '';
+            document.getElementById('asset-condition').value = ast.condition;
+            document.getElementById('asset-location').value = ast.location;
+            document.getElementById('asset-booked-to').value = ast.bookedTo || '';
+        }
+
+        // ROOMS CRUD
+        function renderRooms() {
+            const bldgFilter = document.getElementById('room-building-filter').value;
+            const typeFilter = document.getElementById('room-type-filter').value;
+
+            const filtered = rooms.filter(rm => {
+                const matchesBldg = bldgFilter === 'ALL' || rm.building === bldgFilter;
+                const matchesType = typeFilter === 'ALL' || rm.type === typeFilter;
+                return matchesBldg && matchesType;
+            });
+
+            const grid = document.getElementById('rooms-grid');
+            if (filtered.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center py-12 text-xs text-gray-400">No rooms found matching filters.</div>`;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(rm => {
+                const activeRoomJobs = jobs.filter(j => j.roomRef === rm.name && j.status !== 'Resolved').length;
+                return `
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-5 flex flex-col justify-between hover:border-purple-500/50 transition-all">
+                        <div>
+                            <div class="flex items-start justify-between">
+                                <span class="px-2.5 py-1 rounded-md text-xs font-semibold border ${getRoomTypeBadge(rm.type)}">${rm.type}</span>
+                                <div class="space-x-1">
+                                    <button onclick="editRoom('${rm.id}')" class="p-1 text-gray-400 hover:text-purple-600 dark:hover:text-purple-400"><i class="fa-solid fa-pen-to-square"></i></button>
+                                    <button onclick="confirmDelete('room', '${rm.id}')" class="p-1 text-gray-400 hover:text-rose-600 dark:hover:text-rose-400"><i class="fa-solid fa-trash-can"></i></button>
+                                </div>
+                            </div>
+                            <h3 class="text-base font-bold text-gray-900 dark:text-white mt-3">${rm.name}</h3>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">${rm.building} • Room ${rm.number}</p>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-gray-100 dark:border-gray-700/60 flex justify-between items-center text-xs text-gray-500">
+                            <span>Assigned Assets: ${assets.filter(a => a.location === rm.name).length}</span>
+                            ${activeRoomJobs > 0 ? `<span class="text-rose-500 font-semibold"><i class="fa-solid fa-triangle-exclamation"></i> ${activeRoomJobs} active job(s)</span>` : `<span class="text-emerald-500 font-medium"><i class="fa-solid fa-circle-check"></i> Operational</span>`}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function saveRoom(e) {
+            e.preventDefault();
+            const id = document.getElementById('room-id').value;
+            const name = document.getElementById('room-name').value.trim();
+            const building = document.getElementById('room-building').value.trim();
+            const number = document.getElementById('room-number').value.trim();
+            const type = document.getElementById('room-type').value;
+
+            if (id) {
+                const idx = rooms.findIndex(r => r.id === id);
+                if (idx !== -1) rooms[idx] = { id, name, building, number, type };
+            } else {
+                const newRoom = { id: 'rm-' + Date.now(), name, building, number, type };
+                rooms.push(newRoom);
+            }
+
+            saveLocalData();
+            renderAll();
+            closeModal('modal-room');
+            document.getElementById('form-room').reset();
+            document.getElementById('room-id').value = '';
+            showToast("Room details saved!");
+        }
+
+        function editRoom(id) {
+            const rm = rooms.find(r => r.id === id);
+            if (!rm) return;
+            openModal('modal-room');
+            document.getElementById('modal-room-title').textContent = "Edit Room";
+            document.getElementById('room-id').value = rm.id;
+            document.getElementById('room-name').value = rm.name;
+            document.getElementById('room-building').value = rm.building;
+            document.getElementById('room-number').value = rm.number;
+            document.getElementById('room-type').value = rm.type;
+        }
+
+        // JOBS / TICKETS MANAGEMENT
+        function renderJobs() {
+            const openJobs = jobs.filter(j => j.status === 'Open');
+            const progressJobs = jobs.filter(j => j.status === 'In Progress');
+            const resolvedJobs = jobs.filter(j => j.status === 'Resolved');
+
+            document.getElementById('count-open-tickets').textContent = openJobs.length;
+            document.getElementById('count-progress-tickets').textContent = progressJobs.length;
+            document.getElementById('count-resolved-tickets').textContent = resolvedJobs.length;
+
+            const renderJobCard = (j) => `
+                <div class="bg-white dark:bg-gray-800 p-4 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm space-y-2">
+                    <div class="flex justify-between items-start">
+                        <h4 class="font-bold text-sm text-gray-900 dark:text-white">${j.title}</h4>
+                        <span class="px-2 py-0.5 text-[10px] rounded font-bold uppercase ${getSeverityBadge(j.severity)}">${j.severity}</span>
+                    </div>
+                    <p class="text-xs text-gray-600 dark:text-gray-300">${j.description}</p>
+                    <div class="text-[11px] text-gray-400 font-medium flex items-center justify-between pt-2 border-t dark:border-gray-700">
+                        <span><i class="fa-solid fa-door-open mr-1"></i>${j.roomRef} ${j.assetRef ? `(${j.assetRef})` : ''}</span>
+                        <span>${j.createdAt}</span>
+                    </div>
+                    <div class="pt-2 flex justify-end gap-2">
+                        ${j.status === 'Open' ? `<button onclick="updateJobStatus('${j.id}', 'In Progress')" class="px-2 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700">Start Progress</button>` : ''}
+                        ${j.status === 'In Progress' ? `<button onclick="updateJobStatus('${j.id}', 'Resolved')" class="px-2 py-1 text-xs bg-emerald-600 text-white rounded hover:bg-emerald-700">Mark Resolved</button>` : ''}
+                        <button onclick="confirmDelete('job', '${j.id}')" class="px-2 py-1 text-xs bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded hover:bg-rose-500 hover:text-white"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('container-open-tickets').innerHTML = openJobs.length ? openJobs.map(renderJobCard).join('') : '<p class="text-xs text-gray-400 py-4 text-center">No open tickets.</p>';
+            document.getElementById('container-progress-tickets').innerHTML = progressJobs.length ? progressJobs.map(renderJobCard).join('') : '<p class="text-xs text-gray-400 py-4 text-center">No tickets in progress.</p>';
+            document.getElementById('container-resolved-tickets').innerHTML = resolvedJobs.length ? resolvedJobs.map(renderJobCard).join('') : '<p class="text-xs text-gray-400 py-4 text-center col-span-full">No resolved tickets.</p>';
+        }
+
+        function saveJob(e) {
+            e.preventDefault();
+            const title = document.getElementById('job-title').value.trim();
+            const roomRef = document.getElementById('job-room-ref').value;
+            const assetRef = document.getElementById('job-asset-ref').value;
+            const severity = document.getElementById('job-severity').value;
+            const description = document.getElementById('job-desc').value.trim();
+
+            const dateStr = new Date().toISOString().replace('T', ' ').substring(0, 16);
+            const newJob = {
+                id: 'job-' + Date.now(),
+                title,
+                roomRef,
+                assetRef,
+                severity,
+                description,
+                status: 'Open',
+                createdAt: dateStr,
+                updatedAt: dateStr
+            };
+
+            jobs.push(newJob);
+            saveLocalData();
+            renderAll();
+            closeModal('modal-job');
+            document.getElementById('form-job').reset();
+            showToast("Fault ticket logged successfully!");
+        }
+
+        function updateJobStatus(id, newStatus) {
+            const j = jobs.find(job => job.id === id);
+            if (j) {
+                j.status = newStatus;
+                j.updatedAt = new Date().toISOString().replace('T', ' ').substring(0, 16);
+                saveLocalData();
+                renderAll();
+                showToast(`Job status updated to ${newStatus}`);
+            }
+        }
+
+        // DELETION CONFIRMATION
+        let deleteTarget = null;
+        function confirmDelete(type, id) {
+            deleteTarget = { type, id };
+            document.getElementById('confirm-title').textContent = `Delete ${type.toUpperCase()}`;
+            document.getElementById('confirm-message').textContent = `Are you sure you want to remove this ${type}?`;
+            document.getElementById('confirm-action-btn').onclick = executeDelete;
+            openModal('modal-confirm');
+        }
+
+        function executeDelete() {
+            if (!deleteTarget) return;
+            const { type, id } = deleteTarget;
+            if (type === 'asset') assets = assets.filter(a => a.id !== id);
+            if (type === 'room') rooms = rooms.filter(r => r.id !== id);
+            if (type === 'job') jobs = jobs.filter(j => j.id !== id);
+            if (type === 'stock') stock = stock.filter(s => s.id !== id);
+
+            saveLocalData();
+            renderAll();
+            closeModal('modal-confirm');
+            showToast(`${type.toUpperCase()} removed successfully.`);
+        }
+
+        // IMPORT / EXPORT UTILITIES
+        function downloadFile(content, fileName, contentType) {
+            const a = document.createElement("a");
+            const file = new Blob([content], { type: contentType });
+            a.href = URL.createObjectURL(file);
+            a.download = fileName;
+            a.click();
+        }
+
+        function downloadRoomsSampleCSV() {
+            const csv = "Room Name,Building,Room Number,Room Type\nStudio C,Media Center,202,Studio\nRehearsal 3,Music Wing,105,Rehearsal Room";
+            downloadFile(csv, "rooms_sample.csv", "text/csv");
+        }
+
+        function importRoomsCSV() {
+            const fileInput = document.getElementById('csv-rooms-file');
+            if (!fileInput.files.length) return alert("Please select a Rooms CSV file first.");
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const lines = e.target.result.split('\n');
+                let count = 0;
+                for (let i = 1; i < lines.length; i++) {
+                    const row = lines[i].split(',').map(s => s.trim().replace(/^"|"$/g, ''));
+                    if (row.length >= 4 && row[0]) {
+                        const newRm = {
+                            id: 'rm-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4),
+                            name: row[0],
+                            building: row[1],
+                            number: row[2],
+                            type: row[3] || 'Studio'
+                        };
+                        rooms.push(newRm);
+                        count++;
+                    }
+                }
+                saveLocalData();
+                renderAll();
+                closeModal('modal-csv');
+                showToast(`Imported ${count} rooms!`);
+            };
+            reader.readAsText(fileInput.files[0]);
+        }
+
+        function downloadAssetsSampleCSV() {
+            const csv = "Asset ID,Serial Number,Manufacturer,Model,Category,Subcategory,Condition,Location,Booked Out To\nMIC-099,SN-12345,Shure,SM57,Microphone,Dynamic,Working,Store,John Smith\nDRM-003,SN-88112,Pearl,Export Floor Tom,Drums,Floor Tom,Working,Live Room B,";
+            downloadFile(csv, "assets_sample.csv", "text/csv");
+        }
+
+        function importAssetsCSV() {
+            const fileInput = document.getElementById('csv-assets-file');
+            if (!fileInput.files.length) return alert("Please select an Assets CSV file first.");
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const lines = e.target.result.split('\n');
+                let count = 0;
+                for (let i = 1; i < lines.length; i++) {
+                    const row = lines[i].split(',').map(s => s.trim().replace(/^"|"$/g, ''));
+                    if (row.length >= 8 && row[0]) {
+                        const newAst = {
+                            id: 'ast-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4),
+                            code: row[0],
+                            serial: row[1] || 'N/A',
+                            manufacturer: row[2],
+                            model: row[3],
+                            category: row[4] || 'Other',
+                            subcategory: row[5] || '',
+                            condition: row[6] || 'Working',
+                            location: row[7] || 'Store',
+                            bookedTo: row[8] || '',
+                            perishablesHistory: []
+                        };
+                        assets.push(newAst);
+                        count++;
+                    }
+                }
+                saveLocalData();
+                renderAll();
+                closeModal('modal-csv');
+                showToast(`Imported ${count} assets!`);
+            };
+            reader.readAsText(fileInput.files[0]);
+        }
+
+        function exportAssetsCSV() {
+            let csv = "Asset ID,Serial Number,Manufacturer,Model,Category,Subcategory,Condition,Location,Booked Out To\n";
+            assets.forEach(a => {
+                csv += `"${a.code}","${a.serial}","${a.manufacturer}","${a.model}","${a.category || ''}","${a.subcategory || ''}","${a.condition}","${a.location}","${a.bookedTo || ''}"\n`;
+            });
+            downloadFile(csv, "assets_export.csv", "text/csv");
+        }
+
+        function exportJSONBackup() {
+            const backupData = { rooms, assets, jobs, stock, timestamp: new Date().toISOString() };
+            downloadFile(JSON.stringify(backupData, null, 2), "musictech_backup.json", "application/json");
+        }
+    </script>
+</body>
+</html>
