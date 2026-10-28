@@ -961,12 +961,16 @@ async function pushToGitHub() {
                 body: JSON.stringify(masterPayload)
             });
 
-            if (!res.ok) {
+            if (res.ok) {
+                console.log("☁️ Successfully pushed update to JSONBin.");
+            } else {
                 const errText = await res.text();
-                console.error("Cloud push failed:", errText);
+                console.error("Cloud push failed:", res.status, errText);
+                showToast(`❌ Save Blocked (${res.status}): Check API Key permissions`);
             }
         } catch (err) {
-            console.error("Background sync failed:", err);
+            console.error("Background sync network error:", err);
+            showToast("❌ Network error: Corporate firewall blocking sync.");
         }
     }, 300);
 }
