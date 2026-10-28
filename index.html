@@ -941,58 +941,103 @@
         }
 
         let syncTimeout = null;
-        async function pushToGitHub() {
-            const binId = localStorage.getItem('gh_user');
-            const apiKey = localStorage.getItem('gh_token');
 
-            if (!binId || !apiKey) return;
+async function pushToGitHub() {
+    const binId = localStorage.getItem('gh_user');
+    const apiKey = localStorage.getItem('gh_token');
 
-            clearTimeout(syncTimeout);
-            syncTimeout = setTimeout(async () => {
-                try {
-                    const masterPayload = { rooms, assets, jobs, stock, updatedAt: new Date().toISOString() };
-                    await fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-Master-Key': apiKey
-                        },
-                        body: JSON.stringify(masterPayload)
-                    });
-                } catch (err) {
-                    console.error("Background sync failed:", err);
-                }
-            }, 300);
+    if (!binId || !apiKey) return;
+
+    clearTimeout(syncTimeout);
+    syncTimeout = setTimeout(async () => {
+        try {
+            const masterPayload = { rooms, assets, jobs, stock, updatedAt: new Date().toISOString() };
+            const res = await fetch(`https://api.jsonbin.io/v3/b/${binId}/`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Master-Key': apiKey
+                },
+                body: JSON.stringify(masterPayload)
+            });
+
+            if (!res.ok) {
+                const errText = await res.text();
+                console.error("Cloud push failed:", errText);
+            }
+        } catch (err) {
+            console.error("Background sync failed:", err);
         }
+    }, 300);
+}
 
-        async function pullFromGitHubSilently() {
-            const binId = localStorage.getItem('gh_user');
-            const apiKey = localStorage.getItem('gh_token');
-            if (!binId || !apiKey) return;
+async function pullFromGitHub() {
+    const binId = localStorage.getItem('gh_user');
+    const apiKey = localStorage.getItem('gh_token');
 
-            try {
-                const res = await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`, {
-                    headers: { 'X-Master-Key': apiKey }
-                });
-                if (res.ok) {
-                    const data = await res.json();
-                    const record = data.record;
+    if (!binId || !apiKey) {
+        openModal('modal-github');
+        showToast("Please configure your credentials first.");
+        return;
+    }
 
-                    if (record) {
-                        if (record.rooms) rooms = record.rooms;
-                        if (record.assets) assets = record.assets;
-                        if (record.jobs) jobs = record.jobs;
-                        if (record.stock) stock = record.stock;
+    try {
+        const res = await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`, {
+            headers: { 'X-Master-Key': apiKey }
+        });
 
-                        saveLocalDataSilently();
-                        renderAll();
-                    }
-                }
-            } catch (err) {
-                console.error("Silent startup pull failed:", err);
+        if (res.ok) {
+            const data = await res.json();
+            const record = data.record;
+
+            if (record && (Array.isArray(record.assets) || Array.isArray(record.rooms))) {
+                rooms = record.rooms || [];
+                assets = record.assets || [];
+                jobs = record.jobs || [];
+                stock = record.stock || [];
+
+                saveLocalDataSilently();
+                renderAll();
+                showToast("Successfully pulled latest data from cloud!");
+            } else {
+                showToast("Invalid data format received from cloud.");
+            }
+        } else {
+            showToast("Failed to pull from cloud. Check credentials.");
+        }
+    } catch (err) {
+        console.error("Cloud pull error:", err);
+        showToast("Connection error during cloud pull.");
+    }
+}
+
+async function pullFromGitHubSilently() {
+    const binId = localStorage.getItem('gh_user');
+    const apiKey = localStorage.getItem('gh_token');
+    if (!binId || !apiKey) return;
+
+    try {
+        const res = await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`, {
+            headers: { 'X-Master-Key': apiKey }
+        });
+        if (res.ok) {
+            const data = await res.json();
+            const record = data.record;
+
+            if (record && (Array.isArray(record.assets) || Array.isArray(record.rooms))) {
+                rooms = record.rooms || [];
+                assets = record.assets || [];
+                jobs = record.jobs || [];
+                stock = record.stock || [];
+
+                saveLocalDataSilently();
+                renderAll();
             }
         }
-
+    } catch (err) {
+        console.error("Silent startup pull failed:", err);
+    }
+}
         function saveLocalDataSilently() {
             localStorage.setItem('mt_rooms', JSON.stringify(rooms));
             localStorage.setItem('mt_assets', JSON.stringify(assets));
