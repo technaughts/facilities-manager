@@ -952,8 +952,10 @@ async function pushToGitHub() {
     syncTimeout = setTimeout(async () => {
         try {
             const masterPayload = { rooms, assets, jobs, stock, updatedAt: new Date().toISOString() };
-            const res = await fetch(`https://api.jsonbin.io/v3/b/${binId}/`, {
-                method: 'PUT',
+            
+            // Switched from PUT to POST to bypass corporate firewall restrictions
+            const res = await fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-Master-Key': apiKey
@@ -962,15 +964,16 @@ async function pushToGitHub() {
             });
 
             if (res.ok) {
-                console.log("☁️ Successfully pushed update to JSONBin.");
+                console.log("☁️ Successfully pushed update to JSONBin via POST.");
+                showToast("☁️ Synced to cloud successfully!");
             } else {
                 const errText = await res.text();
                 console.error("Cloud push failed:", res.status, errText);
-                showToast(`❌ Save Blocked (${res.status}): Check API Key permissions`);
+                showToast(`⚠️ Sync Blocked (${res.status})`);
             }
         } catch (err) {
             console.error("Background sync network error:", err);
-            showToast("❌ Network error: Corporate firewall blocking sync.");
+            showToast("⚠️ Network error: Firewall blocked upload.");
         }
     }, 300);
 }
