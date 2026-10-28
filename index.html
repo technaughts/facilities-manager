@@ -953,9 +953,9 @@ async function pushToGitHub() {
         try {
             const masterPayload = { rooms, assets, jobs, stock, updatedAt: new Date().toISOString() };
             
-            // Switched from PUT to POST to bypass corporate firewall restrictions
+            // JSONBin v3 requires PUT for updating existing bins
             const res = await fetch(`https://api.jsonbin.io/v3/b/${binId}`, {
-                method: 'POST',
+                method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-Master-Key': apiKey
@@ -964,16 +964,14 @@ async function pushToGitHub() {
             });
 
             if (res.ok) {
-                console.log("☁️ Successfully pushed update to JSONBin via POST.");
+                console.log("Successfully pushed update to JSONBin.");
                 showToast("☁️ Synced to cloud successfully!");
             } else {
                 const errText = await res.text();
                 console.error("Cloud push failed:", res.status, errText);
-                showToast(`⚠️ Sync Blocked (${res.status})`);
             }
         } catch (err) {
             console.error("Background sync network error:", err);
-            showToast("⚠️ Network error: Firewall blocked upload.");
         }
     }, 300);
 }
